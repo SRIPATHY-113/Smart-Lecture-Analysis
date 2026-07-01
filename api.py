@@ -1,30 +1,23 @@
 """
 api.py — Smart Lecturer Flask REST API
 Wraps the existing pipeline modules with HTTP endpoints.
-
-Run:
-    pip install flask flask-cors
-    python api.py
-
-Endpoints:
-    POST /api/process          { url }          → start pipeline
-    GET  /api/status           → pipeline status + progress
-    POST /api/query            { query, top_k } → semantic search
-    GET  /api/slides           → list of detected slides
-    GET  /api/transcript       → full transcript segments
-    GET  /api/metadata         → index metadata + PMI
-    GET  /api/frame/<index>    → slide frame image (base64)
 """
 
 import sys
 import os
 from pathlib import Path
 
-# ── FORCE ROOT PATH TRACKING BEFORE ANY EXTRA MODULE IMPORT ──────────────────
-# This ensures Python can see the 'modules' folder regardless of execution environment
-CURRENT_DIR = Path(__file__).parent.resolve()
-sys.path.insert(0, str(CURRENT_DIR))
+# ── 1. FORCE ABSOLUTE WORKSPACE PATH EVALUATION FIRST ────────────────────────
+# This MUST run before importing config or modules
+CURRENT_WORKSPACE = Path(__file__).parent.resolve()
+if str(CURRENT_WORKSPACE) not in sys.path:
+    sys.path.insert(0, str(CURRENT_WORKSPACE))
 
+# Explicitly add the parent context if running via nested workers
+if "/app" not in sys.path:
+    sys.path.insert(1, "/app")
+
+# ── 2. STANDARD RUNTIME IMPORTS ──────────────────────────────────────────────
 import base64
 import json
 import threading
@@ -33,6 +26,7 @@ import time
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+# ── 3. PROJECT INTERNAL IMPORTS (Now completely safe) ────────────────────────
 from config import FRAMES_DIR, METADATA_PATH, TRANSCRIPTS_DIR, VECTOR_DIR
 from modules.audio_processor import align_with_slides, extract_audio, transcribe
 from modules.semantic_indexer import SemanticIndex, build_chunks_from_transcript
@@ -59,7 +53,7 @@ pipeline_state = {
 
 _index: SemanticIndex | None = None
 
-
+# ... Keep the rest of your routes and pipeline runner functions exactly the same ...
 # ── Pipeline runner (background thread) ───────────────────────────────────────
 
 def run_pipeline(url: str):
