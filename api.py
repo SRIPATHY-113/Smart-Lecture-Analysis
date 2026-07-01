@@ -252,6 +252,15 @@ def _fmt_time(seconds):
 
 
 if __name__ == "__main__":
+    import os
+    
+    # 1. Load your existing index files on startup as usual
     load_existing_index()
-    print("\n Smart Lecturer API running at http://localhost:5000\n")
-    app.run(debug=False, port=5000, threaded=True)
+    
+    # 2. Dynamically read the port assigned by Hugging Face (defaults to 7860)
+    port = int(os.environ.get("PORT", 7860))
+    
+    print(f"\n🚀 Smart Lecturer API initializing on cloud port: {port}\n")
+    
+    # 3. Run the app binding to 0.0.0.0 so it can accept external cloud requests
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
