@@ -37,5 +37,5 @@ USER user
 # Expose the default Hugging Face space tracking port
 EXPOSE 7860
 
-# Execute backend server via Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "300", "api:app"]
+# Execute backend server via Gunicorn with explicit PYTHONPATH tracking
+CMD ["gunicorn", "--env", "PYTHONPATH=.", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "300", "api:app"]
