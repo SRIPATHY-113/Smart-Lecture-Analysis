@@ -6,16 +6,17 @@ ENV PYTHONUNBUFFERED=1 \
     HOME=/home/user \
     PATH=/home/user/.local/bin:$PATH
 
-# Install critical system libraries required for processing video/audio and matrix computing
+# Install critical system libraries (with updated modern GLX dependencies)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
-    libgl1-mesa-glx \
+    libgl1 \
+    libglx-mesa0 \
     libglib2.0-0 \
     build-essential \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up a non-root system user for safety (Hugging Face security standard)
+# Set up a non-root system user for safety
 RUN useradd -m -u 1000 user
 WORKDIR /app
 
