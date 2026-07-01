@@ -2,7 +2,7 @@
 api.py — Smart Lecturer Flask REST API
 Wraps the existing pipeline modules with HTTP endpoints.
 """
-
+from __future__ import annotations
 import sys
 import os
 from pathlib import Path
