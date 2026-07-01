@@ -23,14 +23,28 @@ from __future__ import annotations
 
 import argparse
 import sys
+import os
 from pathlib import Path
 
+# ── FIX PATH RESOLUTION BEFORE ANY CORE IMPLEMENTATION ───────────────────────
+# Explicitly forces the script directory into Python's workspace path array
+CURRENT_FILE_DIR = Path(__file__).parent.resolve()
+sys.path.insert(0, str(CURRENT_FILE_DIR))
+# ─────────────────────────────────────────────────────────────────────────────
+
+import base64
+import json
+import threading
+import time
+
+# Explicitly import all missing configuration environment variables
 from config import (
-    INPUT_VIDEO,
-    METADATA_PATH,
-    TOP_K,
-    TRANSCRIPTS_DIR,
-    VECTOR_DIR,
+    INPUT_VIDEO, 
+    METADATA_PATH, 
+    VECTOR_DIR, 
+    TOP_K, 
+    FRAMES_DIR, 
+    TRANSCRIPTS_DIR
 )
 from modules.audio_processor import (
     align_with_slides,
@@ -70,7 +84,7 @@ def run_pipeline(
       7. Save index and metadata.
 
     Args:
-        url:             YouTube video URL. Required unless skip_download=True.
+        url:            YouTube video URL. Required unless skip_download=True.
         skip_download:   If True, skip downloading and use existing video file.
         reference_path:  Optional path to ground-truth transcript for WER.
 
