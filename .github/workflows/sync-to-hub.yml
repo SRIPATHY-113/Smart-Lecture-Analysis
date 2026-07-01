@@ -1,0 +1,23 @@
+name: Sync GitHub to Hugging Face Hub
+
+on:
+  push:
+    branches: [main] # Triggers the automation workflow whenever you push changes to your main branch
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to Hugging Face Spaces
+        uses: huggingface/hub-sync@v0.1.0
+        with:
+          github_repo_id: ${{ github.repository }}
+          huggingface_repo_id: yhtapirs/smart-lecturer-backend  
+          hf_token: ${{ secrets.HF_TOKEN }}
+          repo_type: space
+          space_sdk: docker 
