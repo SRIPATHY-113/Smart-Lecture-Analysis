@@ -1,3 +1,13 @@
+---
+title: Smart Lecturer Backend
+emoji: 🎓
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_file: api.py
+pinned: false
+---
+
 # 🎓 Smart Lecturer
 
 > **A Multimodal AI Pipeline for Lecture Video Indexing and Semantic Search**
