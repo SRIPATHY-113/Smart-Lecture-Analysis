@@ -16,25 +16,23 @@ Endpoints:
     GET  /api/frame/<index>    → slide frame image (base64)
 """
 
+import sys
+import os
+from pathlib import Path
+
+# ── FORCE ROOT PATH TRACKING BEFORE ANY EXTRA MODULE IMPORT ──────────────────
+# This ensures Python can see the 'modules' folder regardless of execution environment
+CURRENT_DIR = Path(__file__).parent.resolve()
+sys.path.insert(0, str(CURRENT_DIR))
+
 import base64
 import json
-import os
-import sys
 import threading
 import time
-from pathlib import Path
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-# ── add smart_lecturer root to path ──────────────────────────────────────────
-ROOT = Path(__file__).parent.parent / "smart_lecturer"
-sys.path.insert(0, str(ROOT))
-import sys
-import os
-
-# Explicitly add the application directory to the Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from config import FRAMES_DIR, METADATA_PATH, TRANSCRIPTS_DIR, VECTOR_DIR
 from modules.audio_processor import align_with_slides, extract_audio, transcribe
 from modules.semantic_indexer import SemanticIndex, build_chunks_from_transcript
@@ -256,15 +254,12 @@ def _fmt_time(seconds):
 
 
 if __name__ == "__main__":
-    import os
-    
-    # 1. Load your existing index files on startup as usual
+    # Load existing index files on startup if present
     load_existing_index()
     
-    # 2. Dynamically read the port assigned by Hugging Face (defaults to 7860)
+    # Read the port assigned by Hugging Face (defaulting to 7860)
     port = int(os.environ.get("PORT", 7860))
-    
     print(f"\n🚀 Smart Lecturer API initializing on cloud port: {port}\n")
     
-    # 3. Run the app binding to 0.0.0.0 so it can accept external cloud requests
+    # Run the app binding to 0.0.0.0 for external cloud access
     app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
