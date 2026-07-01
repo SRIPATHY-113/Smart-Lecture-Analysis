@@ -30,7 +30,11 @@ from flask_cors import CORS
 # ── add smart_lecturer root to path ──────────────────────────────────────────
 ROOT = Path(__file__).parent.parent / "smart_lecturer"
 sys.path.insert(0, str(ROOT))
+import sys
+import os
 
+# Explicitly add the application directory to the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from config import FRAMES_DIR, METADATA_PATH, TRANSCRIPTS_DIR, VECTOR_DIR
 from modules.audio_processor import align_with_slides, extract_audio, transcribe
 from modules.semantic_indexer import SemanticIndex, build_chunks_from_transcript
